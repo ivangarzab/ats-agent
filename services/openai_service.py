@@ -267,7 +267,6 @@ class OpenAIService:
                 
                 # Ensure the JSON and natural language response are clearly separated
                 formatted_response = f"```json\n{attention_json}\n```\n\n{raw_response}"
-                slef.logger.info(f"[LOG] {raw_response}")
                 return formatted_response
 
             except RateLimitError as e:

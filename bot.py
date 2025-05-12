@@ -104,18 +104,7 @@ class ATSAgent(commands.Bot):
         """Handle errors in application commands gracefully"""
         self.logger.error(f"Error in command {interaction.command.name if interaction.command else 'unknown'}: {error}")
         
-        # Select appropriate message based on error type
-        error_message = ""
-        if isinstance(error, ResourceNotFoundError):
-            error_message = random.choice(RESOURCE_NOT_FOUND_MESSAGES)
-        elif isinstance(error, ValidationError):
-            error_message = random.choice(VALIDATION_MESSAGES)
-        elif isinstance(error, AuthenticationError):
-            error_message = random.choice(AUTH_MESSAGES)
-        elif isinstance(error, APIError) and "Connection error" in str(error):
-            error_message = random.choice(CONNECTION_MESSAGES)
-        else:
-            error_message = random.choice(GENERIC_ERRORS)
+        error_message = random.choice(GENERIC_ERRORS)
         
         try:
             # If response hasn't been sent yet
@@ -131,7 +120,6 @@ class ATSAgent(commands.Bot):
                     ephemeral=True
                 )
         except Exception as e:
-            # If responding fails, at least log it
             self.logger.error(f"Couldn't respond to interaction error: {e}")
 
     @commands.Cog.listener()
