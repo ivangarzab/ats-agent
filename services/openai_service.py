@@ -6,67 +6,75 @@ from openai import OpenAIError, APIError, RateLimitError, APIConnectionError
 
 class OpenAIService:
     """
-    A comprehensive service for interacting with OpenAI's API.
-    
-    This class handles all aspects of communicating with OpenAI's API including:
+    A comprehensive service for interacting with OpenAI's API with role-playing support.
+
+    This class handles:
     - Authentication and client initialization
-    - Low-level API interactions with robust error handling
-    - Retry logic for transient failures
-    - Higher-level convenience methods for common use cases
-    
-    The service provides both direct access to the underlying API through 
-    `create_chat_completion` for maximum flexibility, and simplified interfaces
-    like `get_response` for common usage patterns.
+    - Role-based responses through a system message
+    - Error handling and retry logic
+    - Simple interfaces for common use cases
     """
-    
+
     def __init__(self, api_key: str):
-        """Initialize the OpenAI service with your API key."""
         if not api_key:
             raise ValueError("API key cannot be empty")
         self.client = openai.Client(api_key=api_key)
-    
+        self.system_prompt = (
+            "You are role-playing as [INSERT CHARACTER OR ROLE HERE]. "
+            "Stay in character and respond accordingly to all prompts."
+        )
+
+    def set_role(self, role_description: str):
+        """
+        Update the system prompt to assume a new character or role.
+        """
+        self.system_prompt = (
+            f"You are role-playing as {role_description}. "
+            "Stay in character and respond accordingly to all prompts."
+        )
+
+    def set_autonomous_car_role(self):
+        """
+        Set the role to an autonomous self-driving car navigating urban environments.
+        """
+        self.system_prompt = (
+            "You are an autonomous self-driving car named ATSY. Narrate your internal "
+            "decision-making process as you drive through an urban environment. Include "
+            "observations about traffic, pedestrians, obstacles, road signs, weather, and "
+            "route decisions. Stay in character as a machine with advanced perception and "
+            "planning systems."
+        )
+
     def create_chat_completion(
         self,
         messages: list,
         model: str = "gpt-3.5-turbo",
         temperature: float = 0.7,
         max_retries: int = 3,
-        retry_delay: float = 1.0
+        retry_delay: float = 1.0,
+        max_tokens: int = 100
     ) -> Optional[str]:
-        """
-        Create a chat completion using OpenAI's models with error handling.
-        
-        Args:
-            messages: List of message dictionaries with 'role' and 'content'
-            model: The model to use (defaults to gpt-3.5-turbo)
-            temperature: Controls randomness (0.0 to 1.0)
-            max_retries: Maximum number of retry attempts for recoverable errors
-            retry_delay: Delay between retries in seconds
-        
-        Returns:
-            The generated response text, or None if all retries failed
-            
-        Raises:
-            ValueError: If messages are empty or malformed
-            Exception: For unrecoverable API errors
-        """
         if not messages:
             raise ValueError("Messages list cannot be empty")
-        
+
         if not isinstance(messages, list):
             raise ValueError("Messages must be a list of dictionaries")
-            
+
         for message in messages:
             if not isinstance(message, dict) or 'role' not in message or 'content' not in message:
                 raise ValueError("Each message must be a dictionary with 'role' and 'content' keys")
+
+        # Prepend system message for role-playing
+        full_messages = [{"role": "system", "content": self.system_prompt}] + messages
 
         retries = 0
         while retries <= max_retries:
             try:
                 response = self.client.chat.completions.create(
                     model=model,
-                    messages=messages,
-                    temperature=temperature
+                    messages=full_messages,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
                 )
                 return response.choices[0].message.content
 
@@ -74,7 +82,7 @@ class OpenAIService:
                 if retries == max_retries:
                     print(f"Rate limit exceeded. Error: {str(e)}")
                     return None
-                wait_time = retry_delay * (2 ** retries)  # Exponential backoff
+                wait_time = retry_delay * (2 ** retries)
                 print(f"Rate limit reached. Waiting {wait_time} seconds...")
                 time.sleep(wait_time)
 
@@ -93,33 +101,18 @@ class OpenAIService:
                 time.sleep(retry_delay)
 
             except OpenAIError as e:
-                # Unrecoverable error
                 print(f"OpenAI API error: {str(e)}")
                 raise Exception(f"Unrecoverable error when calling OpenAI API: {str(e)}")
 
             except Exception as e:
-                # Unexpected error
                 print(f"Unexpected error: {str(e)}")
                 raise
 
             retries += 1
 
         return None
-    
+
     async def get_response(self, prompt: str) -> str:
-        """
-        Get a response from OpenAI for the given prompt with improved error handling.
-        
-        This is a simplified interface that converts a text prompt into a properly
-        formatted message and handles common error scenarios with user-friendly
-        messages.
-        
-        Args:
-            prompt (str): The prompt to send to OpenAI
-                
-        Returns:
-            str: The response from OpenAI or a user-friendly error message
-        """
         print(f"Fetching OpenAI response for prompt: {prompt}")
         try:
             messages = [
@@ -139,27 +132,25 @@ class OpenAIService:
             print(f"An unexpected error occurred: {str(e)}")
             return "I encountered an error while processing your request."
 
-
 def main():
     try:
-        # Try to get API key from environment variable
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
             raise ValueError("Please set the OPENAI_API_KEY environment variable")
-        
+
         service = OpenAIService(api_key)
-        
-        # Example with default model (gpt-3.5-turbo)
+        service.set_autonomous_car_role()
+
         messages = [
-            {"role": "user", "content": "What is the capital of France?"}
+            {"role": "user", "content": "You're at 5th and Main. What do you do?"}
         ]
-        
+
         response = service.create_chat_completion(messages)
         if response:
             print("GPT-3.5 Response:", response)
         else:
             print("Failed to get response after all retries")
-        
+
     except ValueError as e:
         print(f"Configuration error: {str(e)}")
     except Exception as e:

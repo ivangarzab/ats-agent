@@ -32,22 +32,16 @@ class ATSAgent(commands.Bot):
         
         # Initialize services
         self.openai_service = OpenAIService(self.config.KEY_OPENAI)
-        
-        # Load club data
-        # self.load_session_details()
-        
+    
         # Register cogs
         self.load_cogs()
         
         # Setup message handlers
         setup_message_handlers(self)
-        
-    # def load_session_details(self):
-    #     """Load session details from the database"""
-    #     self.club = self.api.get_club(self.config.DEFAULT_CLUB_ID)
 
     async def setup_hook(self):
         """Setup hook called when bot is being prepared to connect"""
+        self.logger.info("[DEBUG] Syncing bot commands...")
         await self.tree.sync()  # Sync slash commands
         setup_scheduled_tasks(self)
         self.loop.create_task(self.print_nickname())

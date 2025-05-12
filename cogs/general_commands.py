@@ -29,10 +29,8 @@ def setup_general_commands(bot):
 
         embed.add_field(
             name="📖 Reading Commands",
-            value="• `/session` - Show all session details\n"
-                  "• `/book` - Show current book details\n"
-                  "• `/duedate` - Show the session's due date\n"
-                  "• `/discussions` - Show the session's discussion details",
+            value="• `/start_emulation` - Commence the driving emulation\n"
+                  "• `/book` - Show current book details\n",
             inline=False
         )
 

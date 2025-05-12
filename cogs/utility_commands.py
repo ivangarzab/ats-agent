@@ -48,8 +48,14 @@ def setup_utility_commands(bot):
         """Make prompt to OpenAI."""
         response = await bot.openai_service.get_response(prompt)
         embed = create_embed(
-            title="🤖 Robot Response",
+            title="🤖 ATSY Response",
             description=response,
             color_key="blank"
         )
         await ctx.send(embed=embed)
+
+    @bot.command()
+    async def start_emulation(ctx):
+        """Start the autonomous car emulation through the OpenAI API."""
+        await bot.openai_service.set_autonomous_car_role()
+        await ctx.send("Starting the autonomous car emulation...")
