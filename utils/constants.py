@@ -20,7 +20,7 @@ COLORS = {
 }
 
 # Message templates
-GREETINGS = ['I am Quill', '👀', 'Let\'s get reading!']
+GREETINGS = ['I am ATSY', '👀', 'Let\'s get reading!']
 REACTIONS = ['⚡️', '👽', '🍄', '🌙', '🔥', '👾', '🦉', '🐺', '🍁']
 
 # Fun facts for the funfact command
@@ -90,7 +90,7 @@ VALIDATION_MESSAGES = [
 AUTH_MESSAGES = [
     "🔐 I need proper permission to access that section of the library.",
     "🚫 The library card for that resource has expired.",
-    "👮 The librarian says I don't have access to that shelf."
+    "👮 The matrix says I don't have access to that shelf."
 ]
 
 CONNECTION_MESSAGES = [

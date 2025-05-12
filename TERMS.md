@@ -1,8 +1,8 @@
-## **Terms of Use for Quill the Librarian**
+## **Terms of Use for ATS-Agent**
 
 ### **1. Introduction**
 
-**Quill the Librarian** (the "Bot") is a Discord bot designed to serve as a companion of book club. 
+**ATS-Agent** (the "Bot") is a Discord bot designed to emulate an implementation of the Attention Schema Theory. 
 
 By using the Bot, you agree to these Terms of Use ("Terms").
 

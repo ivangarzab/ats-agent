@@ -16,8 +16,8 @@ def setup_general_commands(bot):
     @bot.tree.command(name="help", description="Show help prompt")
     async def help_command(interaction: discord.Interaction):
         embed = create_embed(
-            title="🦉 Quill's Orientation",
-            description="Greetings human!  I'm here to help you with all things about our book club.",
+            title="ATSY's Help",
+            description="Greetings human!  I'm here to help you test the Attetion Schema Theory (ATS).",
             color_key="info"
         )
 
@@ -43,7 +43,7 @@ def setup_general_commands(bot):
     @bot.tree.command(name="usage", description="Show all available commands")
     async def usage_command(interaction: discord.Interaction):
         embed = create_embed(
-            title="📚 Quill's Commands",
+            title="📚 ATSY's Commands",
             description="Here's everything I can help you with!",
             color_key="info"
         )

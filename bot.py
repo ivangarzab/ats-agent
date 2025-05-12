@@ -59,20 +59,18 @@ class ATSAgent(commands.Bot):
         await self.wait_until_ready()
         for guild in self.guilds:
             nickname = guild.me.nick or guild.me.name
-            print(f"[DEBUG] ~~~~~~~~~~~~ Instance initialized as '{nickname}' ~~~~~~~~~~~~\nwith metadata: \n{json.dumps(self.club, separators=(',', ':'))}")
+            print(f"[DEBUG] ~~~~~~~~~~~~ Instance initialized as '{nickname}' ~~~~~~~~~~~~")
 
     def load_cogs(self):
         """Load all command cogs"""
         from cogs.general_commands import setup_general_commands
         from cogs.session_commands import setup_session_commands
-        from cogs.fun_commands import setup_fun_commands
         from cogs.utility_commands import setup_utility_commands
         from cogs.admin_commands import setup_admin_commands
         
         # Setup commands directly on the command tree
         setup_general_commands(self)
         setup_session_commands(self)
-        setup_fun_commands(self)
         setup_utility_commands(self)
         setup_admin_commands(self)
         

@@ -19,7 +19,7 @@ setup(
     python_requires=">=3.8",
     entry_points={
         'console_scripts': [
-            'quill-bot=main:main',
+            'ats-agent=main:main',
         ],
     },
 )

@@ -37,7 +37,7 @@ def setup_admin_commands(bot):
                 
                 # Create and send a pretty embed
                 embed = create_embed(
-                    title=f"📚 Quill Bot version: v{version}",
+                    title=f"📚 ATS-Agent version: v{version}",
                     color_key="blank",
                     timestamp=True
                 )

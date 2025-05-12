@@ -51,10 +51,3 @@ def setup_message_handlers(bot):
                 footer="Welcome to the Book Club!"
             )
             await channel.send(embed=embed)
-        
-        # Save new member to the database
-        bot.db.save_club({
-            "id": 0,  # Assuming club_id is 0
-            "name": "Quill's Bookclub",
-            "members": [{"id": member.id, "name": member.name, "points": 0, "number_of_books_read": 0}]
-        })
